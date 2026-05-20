@@ -1,0 +1,75 @@
+<!-- Index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CBT Quiz App</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #e9ecef; }
+        #quiz-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+        .option-btn { display: block; width: 100%; margin: 10px 0; padding: 12px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; }
+        .option-btn:hover { background: #f0f0f0; }
+        #timer { font-weight: bold; color: red; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div id="quiz-box">
+        <div id="timer">Time Left: <span id="time">50</span>s</div>
+        <h3 id="question-text">Loading Questions...</h3>
+        <div id="options-container"></div>
+        <button id="next-btn" style="display:none; margin-top:20px;" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <script>
+        // Add this at the very top of your <script> in index.html
+const activeStudent = JSON.parse(sessionStorage.getItem('activeStudent'));
+
+if (!activeStudent) {
+    alert("Please login first!");
+    window.location.href = 'Login.html';
+} else {
+    // Optional: Display their name on the screen
+    const header = document.createElement('div');
+    header.innerHTML = `<p><b>Candidate:</b> ${activeStudent.name} (${activeStudent.class})</p>`;
+    document.getElementById('quiz-box').prepend(header);
+}
+
+// Update your endQuiz function to save the score with the student's name
+function endQuiz() {
+    // 1. Get the current student from sessionStorage (set during login)
+    const activeStudent = JSON.parse(sessionStorage.getItem('activeStudent'));
+    
+    if (!activeStudent) {
+        alert("Error: No active student found. Result cannot be saved.");
+        return;
+    }
+
+    // 2. Create the result object
+    const resultData = {
+        name: activeStudent.name,
+        class: activeStudent.class,
+        code: activeStudent.code,
+        score: score,
+        total: quizData.length,
+        date: new Date().toLocaleString()
+    };
+
+    // 3. Retrieve existing results or start a new array
+    let allResults = JSON.parse(localStorage.getItem('quizResults')) || [];
+    
+    // 4. Add the new result and save back to localStorage
+    allResults.push(resultData);
+    localStorage.setItem('quizResults', JSON.stringify(allResults));
+
+    // 5. Show final screen
+    document.getElementById('quiz-box').innerHTML = `
+        <h2>Exam Completed!</h2>
+        <p>Student: ${activeStudent.name}</p>
+        <p>Score: ${score} / ${quizData.length}</p>
+        <button onclick="window.location.href='Login.html'">Back to Login</button>
+    `;
+}
+
+    </script>
+</body>
+</html>

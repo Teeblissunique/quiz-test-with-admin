@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Login</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f8f9fa; }
+        .login-card { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h1>CBT Entrance</h1>
+        <p>Enter your unique access code to start</p>
+        <input type="text" id="loginCode" placeholder="Access Code">
+        <button onclick="login()">Start Examination</button>
+    </div>
+
+    <script>
+        function login() {
+            const inputCode = document.getElementById('loginCode').value;
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+            
+            const student = students.find(s => s.code === inputCode);
+
+            if (student) {
+                // Save current student to session so the quiz knows who is writing
+                sessionStorage.setItem('activeStudent', JSON.stringify(student));
+                window.location.href = 'index.html'; 
+            } else {
+                alert("Invalid Access Code! Please contact Admin.");
+            }
+        }
+    </script>
+</body>
+</html>
